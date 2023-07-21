@@ -1,0 +1,80 @@
+CREATE TABLE fifacards(
+    name VARCHAR (50),
+    rating TINYINT,
+    card_type VARCHAR (100),
+    position VARCHAR (2),
+    nation VARCHAR (30),
+    league VARCHAR (50),
+    team VARCHAR (100),
+    PAC TINYINT,
+    SHO TINYINT,
+    PAS TINYINT,
+    DRI TINYINT,
+    DEF TINYINT,
+    PHY TINYINT);
+    
+DROP TABLE fifacards;
+    
+SELECT * FROM fifacards;
+
+-- Replaced every '-' with a space to make the data look cleaner
+UPDATE fifacards
+SET card_type = REPLACE(card_type, '-', ' ');
+
+/* which strikers are the fastest:*/
+SELECT * 
+FROM fifacards
+WHERE position = 'ST' AND PAC >= 95
+ORDER BY PAC DESC;
+
+/* which strikers have the best dribbling with a great shot */
+SELECT *
+FROM fifacards
+WHERE position = 'ST' and DRI >= 95 AND SHO >= 95;
+
+
+/* which center midfielder has a great combination of dribbling, passing and defending */
+SELECT name, rating, card_type, position, nation, league, team, DRI, PAS, DEF
+FROM fifacards
+WHERE position = 'CM' AND DRI AND PAS AND DEF >= 85;
+
+/* which cards have a great link by having the same nation and league between midfielder and attacker */
+SELECT name, rating, position, nation, league
+FROM fifacards
+ WHERE (position = 'CM' OR position = 'ST' OR position = 'LW' OR position = 'RW') AND league = 'LaLiga Santander' AND nation = 'Spain';
+ 
+ -- Fifa cards ranked uniquely, determined by rating
+SELECT name, rating, card_type, position, nation, league, team,
+ROW_NUMBER() OVER (ORDER BY rating DESC) ranking 
+FROM fifacards;
+
+-- Create a column titled card_info with player's name, rating and postion with spaces inbetween in the first column 
+SELECT
+CONCAT (
+	name, ' ',rating, ' ', position) as 'card_info',
+	card_type,
+	nation,
+	league,
+	team,
+	PAC,
+	SHO,
+    PAS,
+    DRI,
+    DEF,
+    PHY
+FROM fifacards;
+
+
+-- Shows second most common fifa card
+WITH counts AS (
+	SELECT name, COUNT(*) as cnt
+FROM fifacards
+GROUP BY name
+),
+	ranked AS(
+SELECT *, RANK() OVER(ORDER BY cnt DESC) as ranks
+FROM counts
+  )
+SELECT * FROM ranked
+WHERE ranks = 2
+
