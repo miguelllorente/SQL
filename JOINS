@@ -1,0 +1,88 @@
+CREATE TABLE employee(
+emp_id VARCHAR (5),
+emp_name VARCHAR (20),
+salary INT (10),
+dept_id VARCHAR (5),
+manager_id VARCHAR (5)
+);
+
+CREATE TABLE department(
+dept_id VARCHAR (5),
+dept_name VARCHAR (10)
+);
+
+CREATE TABLE manager(
+manager_id VARCHAR (5),
+manager_name VARCHAR (10),
+dept_id VARCHAR (5)
+);
+
+CREATE TABLE project(
+project_id VARCHAR (5),
+project_name VARCHAR (20),
+team_member_id VARCHAR (5)
+);
+
+INSERT INTO employee (emp_id,emp_name, salary, dept_id, manager_id) VALUES
+('E1', 'Archer', 45000, 'D1', 'M1'),
+('E2', 'Chris', 60000, 'D1', 'M1'),
+('E3', 'Matt', 65000, 'D2', 'M2'),
+('E4', 'Brandon', 75000, 'D2', 'M2'),
+('E5', 'Brendan', 80000, 'D10', 'M3'),
+('E6', 'Ryan', 95450, 'D10', 'M3');
+
+INSERT INTO department (dept_id, dept_name) VALUES
+('D1', 'IT'),
+('D2', 'HR'),
+('D3', 'Finance'),
+('D4', 'Admin');
+
+INSERT INTO manager (manager_id, manager_name, dept_id) VALUES
+('M1', 'Miguel', 'D3'),
+('M2', 'Connor', 'D4'),
+('M3', 'Spencer', 'D1'),
+('M4', 'Gabe', 'D1');
+
+INSERT INTO project (project_id, project_name, team_member_id) VALUES
+('P1', 'Data Migration', 'E1'),
+('P1', 'Data Migration', 'E2'),
+('P1', 'Data Migration', 'M3'),
+('P2', 'ETL Tool', 'E1'),
+('P2', 'ETL Tool', 'M4');
+
+SELECT * FROM employee;
+SELECT * FROM department;
+SELECT * FROM manager;
+SELECT * FROM project;
+
+-- Fetch employee name and the department name they belong to
+SELECT e.emp_name, d.dept_name
+FROM employee e
+INNER JOIN department d ON e.dept_id = d.dept_id;
+
+-- Fetch all employee names and their department name they belong to
+SELECT e.emp_name, d.dept_name
+FROM employee e
+LEFT JOIN department d ON e.dept_id = d.dept_id;
+
+-- Fetch employee names and their managers
+SELECT emp_name, manager_name
+FROM employee e 
+INNER JOIN manager m ON e.dept_id = m.dept_id;
+
+-- Fetch all employee names and their managers
+SELECT emp_name, manager_name
+FROM employee e 
+RIGHT JOIN manager m ON e.dept_id = m.dept_id;
+
+-- Fetch details of ALL employees, managers, departments and projects they work on
+SELECT e.emp_name, d.dept_name, m.manager_name, p.project_name
+FROM employee e
+LEFT JOIN department d ON e.dept_id = d.dept_id
+INNER JOIN manager m ON m.manager_id = e.manager_id
+LEFT JOIN project p ON p.team_member_id = e.emp_id;
+
+DROP TABLE employee;
+DROP TABLE department;
+DROP TABLE manager;
+DROP TABLE project;
