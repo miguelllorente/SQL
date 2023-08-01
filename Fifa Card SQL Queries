@@ -17,38 +17,56 @@ DROP TABLE fifacards;
     
 SELECT * FROM fifacards;
 
--- Replaced every '-' with a space to make the data look cleaner
+/* Replaced every '-' with a space to make the data look cleaner*/
+
 UPDATE fifacards
 SET card_type = REPLACE(card_type, '-', ' ');
 
+
+
 /* which strikers are the fastest:*/
+
 SELECT * 
 FROM fifacards
 WHERE position = 'ST' AND PAC >= 95
 ORDER BY PAC DESC;
 
+
+
 /* which strikers have the best dribbling with a great shot */
+
 SELECT *
 FROM fifacards
 WHERE position = 'ST' and DRI >= 95 AND SHO >= 95;
 
 
+
 /* which center midfielder has a great combination of dribbling, passing and defending */
+
 SELECT name, rating, card_type, position, nation, league, team, DRI, PAS, DEF
 FROM fifacards
 WHERE position = 'CM' AND DRI AND PAS AND DEF >= 85;
 
+
+
 /* which cards have a great link by having the same nation and league between midfielder and attacker */
+
 SELECT name, rating, position, nation, league
 FROM fifacards
  WHERE (position = 'CM' OR position = 'ST' OR position = 'LW' OR position = 'RW') AND league = 'LaLiga Santander' AND nation = 'Spain';
- 
- -- Fifa cards ranked uniquely, determined by rating
+
+
+
+/* Fifa cards ranked uniquely, determined by rating*/
+
 SELECT name, rating, card_type, position, nation, league, team,
 ROW_NUMBER() OVER (ORDER BY rating DESC) ranking 
 FROM fifacards;
 
--- Create a column titled card_info with player's name, rating and postion with spaces inbetween in the first column 
+
+
+/* Create a column titled card_info with player's name, rating and postion with spaces inbetween in the first column */
+
 SELECT
 CONCAT (
 	name, ' ',rating, ' ', position) as 'card_info',
@@ -65,7 +83,8 @@ CONCAT (
 FROM fifacards;
 
 
--- Shows second most common fifa card
+
+/* Shows second most common fifa card */
 WITH counts AS (
 	SELECT name, COUNT(*) as cnt
 FROM fifacards
